@@ -1,5 +1,9 @@
+import { useContext, useEffect, useState } from 'react';
 import PostForm from 'components/posts/PostForm';
 import PostBox from 'components/posts/PostBox';
+import { collection, query, where, onSnapshot, orderBy } from "firebase/firestore";
+import AuthContext from 'context/AuthContext';
+import { db } from 'firebaseApp';
 
 
 export interface PostProps{
@@ -12,57 +16,30 @@ export interface PostProps{
     likes?: string[];
     likeCount?: number;
     comments?: any;
+    hashTags?: string[];
+    imageUrl?: string;
 }
 
-const posts = [
-    {
-        id: "1",
-        email: "test@test.com",
-        content: "this is the content",
-        createdAt:"20203-08-03",
-        uid:"123123",
-        profileUrl:"image",
-        likeCount:2,
-        comments:"hey"
-    },
-    {
-        id: "2",
-        email: "test@test.com",
-        content: "this is the content",
-        createdAt:"20203-08-03",
-        uid:"123123"
-    },
-    {
-        id: "3",
-        email: "test@test.com",
-        content: "this is the content",
-        createdAt:"20203-08-03",
-        uid:"123123"
-    },
-    {
-        id: "4",
-        email: "test@test.com",
-        content: "this is the content",
-        createdAt:"20203-08-03",
-        uid:"123123"
-    },
-    {
-        id: "5",
-        email: "test@test.com",
-        content: "this is the content",
-        createdAt:"20203-08-03",
-        uid:"123123"
-    },
-    {
-        id: "6",
-        email: "test@test.com",
-        content: "this is the content",
-        createdAt:"20203-08-03",
-        uid:"123123"
-    },
-]
+
 
 export default function HomePage() {
+    const[posts, setPosts]=useState<PostProps[]>([]);
+    const {user}=useContext(AuthContext);
+    
+    useEffect( () => {
+        if (user) {
+            let postsRef = collection(db, "posts");
+            let postsQuery = query(postsRef, orderBy("createdAt", "desc"));
+
+            onSnapshot(postsQuery, (snapShot) => {
+                let dataObj = snapShot.docs.map((doc)=>({
+                    ...doc.data(),
+                    id:doc?.id,
+                }))
+                setPosts(dataObj as PostProps[]);
+            });
+        }
+    },[user]);
     return(
         <div className="home">
             <div className="home__top">
@@ -76,9 +53,12 @@ export default function HomePage() {
             <PostForm/>
             { /* Tweet posts */ }
             <div className="post">
-                {posts.map( (post)=>(
+                { posts?.length > 0 ? posts.map( (post)=>(
                     <PostBox post={post} key={post.id}/>
-                ) )}
+                )) : <div className="post__no-posts">
+                        <div className="post__text">No posts to show.</div>
+                    </div>
+                }
             </div>
         </div>
     );

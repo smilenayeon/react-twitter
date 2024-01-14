@@ -158,6 +158,8 @@ export default function SignupForm() {
                 >
                     Sign up with Google Account
                 </button>
+            </div>
+            <div className="form__block">
                 <button 
                     type="button" 
                     name="github" 

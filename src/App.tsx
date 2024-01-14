@@ -30,7 +30,7 @@ function App() {
     <Layout>
       <ToastContainer 
         theme="dark" 
-        autoClose={1000} 
+        autoClose={2000} 
         hideProgressBar 
         newestOnTop
       />

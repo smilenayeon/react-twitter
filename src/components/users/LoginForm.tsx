@@ -124,6 +124,8 @@ export default function LoginForm() {
                 >
                     Log in with Google Account
                 </button>
+            </div>
+            <div className="form__block">
                 <button 
                     type="button" 
                     name="github" 
