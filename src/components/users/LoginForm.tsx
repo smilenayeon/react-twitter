@@ -9,20 +9,22 @@ import {
 } from "firebase/auth";
 import { app } from "firebaseApp";
 import { toast } from "react-toastify";
+import useTranslation from "hooks/useTranslation";
 
 export default function LoginForm() {
     const[error, setError]=useState<string>("");
     const[email, setEmail]=useState<string>("");
     const[password, setPassword]=useState<string>("");
     const navigate = useNavigate();
-    
+    const translate = useTranslation(); 
+
     const onSubmit = async(e:any) => {
         e.preventDefault();
         try {
             const auth = getAuth(app);
             await signInWithEmailAndPassword(auth, email, password);
             navigate("/");
-            toast.success("Successfully signed up.");
+            toast.success(translate("MESSAGE_SIGNUP_SUCCESS"));
 
             
         } catch (error:any) {
@@ -38,7 +40,7 @@ export default function LoginForm() {
             /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
             if(!value?.match(validRegex)){
-                setError("Incorrect Email format.")
+                setError(translate("MESSAGE_EMAIL_ERROR"))
             }else {
                 setError("");
             }
@@ -48,7 +50,7 @@ export default function LoginForm() {
             setPassword(value);
 
             if(value?.length < 8) {
-                setError("Password should be longer than 8 characters.");
+                setError(translate("MESSAGE_PASSWORD_ERROR"));
             }else{
                 setError("");
             }
@@ -76,7 +78,7 @@ export default function LoginForm() {
         )
         .then((result) => {
             console.log(result);
-            toast.success("Successfully logged in.");
+            toast.success(translate("MESSAGE_LOGIN_SUCCESS"));
         })
         .catch((error) => {
             console.log(error);
@@ -87,13 +89,13 @@ export default function LoginForm() {
 
     return(
         <form className="form form__lg" onSubmit={onSubmit}>
-            <div className="form__title">Login</div>
+            <div className="form__title">{translate("MENU_LOGIN")}</div>
             <div className="form__block">
-                <label htmlFor="email">Email</label>
+                <label htmlFor="email">{translate("FORM_EMAIL")}</label>
                 <input type="text" name="email" id="email" value={email} required onChange={onChange}/>
             </div>
             <div className="form__block">
-                <label htmlFor="password">Password</label>
+                <label htmlFor="password">{translate("FORM_PASSWORD")}</label>
                 <input type="password" name="password" id="password" value={password} required onChange={onChange}/>
             </div>
             {error && error.length > 0 && (
@@ -103,8 +105,10 @@ export default function LoginForm() {
             )}
            
             <div className="form__block">
-                Do you not have an account?
-                <Link to="/users/signup" className="form__link">Signup</Link>
+            {translate("NO_ACCOUNT")}
+                <Link to="/users/signup" className="form__link">
+                    {translate("SIGNUP_LINK")}
+                </Link>
             </div>
             <div className="form__block--lg">
                 <button 
@@ -112,7 +116,7 @@ export default function LoginForm() {
                     className="form__btn--submit" 
                     disabled={error?.length > 0 }
                 >
-                    Log In
+                    {translate("SIGNIN_LINK")}
                 </button>
             </div>
             <div className="form__block">
@@ -122,7 +126,7 @@ export default function LoginForm() {
                     className="form__btn--google" 
                     onClick={onClickSocialLogin}
                 >
-                    Log in with Google Account
+                    {translate("LOGIN_WITH_GOOGLE")}
                 </button>
             </div>
             <div className="form__block">
@@ -132,7 +136,7 @@ export default function LoginForm() {
                     className="form__btn--github" 
                     onClick={onClickSocialLogin}
                 >
-                    Log in with Github Account
+                     {translate("LOGIN_WITH_GITHUB")}
                 </button>
             </div>
         </form>

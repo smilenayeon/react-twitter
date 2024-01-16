@@ -8,40 +8,47 @@ import {getAuth, signOut} from "firebase/auth";
 import { app } from "firebaseApp";
 import { toast } from "react-toastify";
 import { AiOutlineSearch } from "react-icons/ai";
+import useTranslation from "hooks/useTranslation";
+import { IoMdNotificationsOutline } from "react-icons/io";
 
 export default function MenuList() {
     const navigate = useNavigate();
     const {user} = useContext(AuthContext);
+    const translate = useTranslation();
 
     return(
         <div className="footer">
             <div className="footer__grid">
                 <button type="button" onClick={ () => navigate("/")}>
                     <BsHouse/>
-                    Home
+                    {translate("MENU_HOME")}
                 </button>
                 <button type="button"onClick={ () => navigate("/profile")}>
                     <BiUserCircle/>
-                    Profile
+                    {translate("MENU_PROFILE")}
                 </button>
                 <button type="button"onClick={ () => navigate("/search")}>
                     <AiOutlineSearch/>
-                    Search
+                    {translate("MENU_SEARCH")}
+                </button>
+                <button type="button"onClick={ () => navigate("/notification")}>
+                    <IoMdNotificationsOutline/>
+                    {translate("MENU_NOTI")}
                 </button>
                 {user === null ? (
                     <button type="button"onClick={() => navigate("/users/login")}>
                     <MdLogin/>
-                    Login
+                    {translate("MENU_LOGIN")}
                 </button>
                 ) : (
                     <button type="button"onClick={ async() => {
                         const auth = getAuth(app);
                         await signOut(auth);
-                        toast.success("Successfullly logged out.");
+                        toast.success(translate("MESSAGE_LOGOUT_SUCCESS"));
                         
                     }}>
                         <MdLogout/>
-                        Logout
+                        {translate("MENU_LOGOUT")}
                     </button>
                 )}
                 

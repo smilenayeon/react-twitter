@@ -9,6 +9,7 @@ import {
 } from "firebase/auth";
 import { app } from "firebaseApp";
 import { toast } from "react-toastify";
+import useTranslation from "hooks/useTranslation";
 
 export default function SignupForm() {
     const[error, setError]=useState<string>("");
@@ -16,6 +17,7 @@ export default function SignupForm() {
     const[password, setPassword]=useState<string>("");
     const[passwordConfirmation, setPasswordConfirmation]=useState<string>("");
     const navigate = useNavigate();
+    const translate = useTranslation();
     
     const onSubmit = async(e:any) => {
         e.preventDefault();
@@ -23,7 +25,7 @@ export default function SignupForm() {
             const auth = getAuth(app);
             await createUserWithEmailAndPassword(auth, email, password);
             navigate("/");
-            toast.success("Successfully signed up.");
+            toast.success(translate("MESSAGE_SIGNUP_SUCCESS"));
 
             
         } catch (error:any) {
@@ -39,7 +41,7 @@ export default function SignupForm() {
             /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
             if(!value?.match(validRegex)){
-                setError("Incorrect Email format.")
+                setError(translate("MESSAGE_EMAIL_ERROR"))
             }else {
                 setError("");
             }
@@ -49,9 +51,9 @@ export default function SignupForm() {
             setPassword(value);
 
             if(value?.length < 8) {
-                setError("Password should be longer than 8 characters.");
+                setError(translate("MESSAGE_PASSWORD_ERROR"));
             }else if (value !== passwordConfirmation){
-                setError("Password should match password confirmation.");
+                setError(translate("MESSAGE_PASSWORD_MATCH_ERROR"));
             }else{
                 setError("");
             }
@@ -60,9 +62,9 @@ export default function SignupForm() {
         if(name === "password_confirmation"){
             setPasswordConfirmation(value);
             if(value?.length < 8) {
-                setError("Password should be 8 characters or more.");
+                setError(translate("MESSAGE_PASSWORD_ERROR"));
             }else if (value !== password) {
-                setError("Password Confirmation should match with the password.");
+                setError(translate("MESSAGE_PASSWORD_MATCH_ERROR"));
             }else{
                 setError("");
             }
@@ -90,7 +92,7 @@ export default function SignupForm() {
         )
         .then((result) => {
             console.log(result);
-            toast.success("Successfully logged in.");
+            toast.success(translate("MESSAGE_LOGIN_SUCCESS"));
         })
         .catch((error) => {
             console.log(error);
@@ -101,9 +103,9 @@ export default function SignupForm() {
 
     return(
         <form className="form form__lg" onSubmit={onSubmit}>
-            <div className="form__title">Signup</div>
+            <div className="form__title"> {translate("MENU_SIGNUP")}</div>
             <div className="form__block">
-                <label htmlFor="email">Email</label>
+                <label htmlFor="email">{translate("FORM_EMAIL")}</label>
                 <input 
                     type="text" 
                     name="email" 
@@ -114,11 +116,11 @@ export default function SignupForm() {
                     />
             </div>
             <div className="form__block">
-                <label htmlFor="password">Password</label>
+                <label htmlFor="password">{translate("FORM_PASSWORD")}</label>
                 <input type="password" name="password" id="password" value={password} required onChange={onChange}/>
             </div>
             <div className="form__block">
-                <label htmlFor="password_confirmation">Password Confirmation</label>
+                <label htmlFor="password_confirmation">{translate("FORM_PASSWORD_CHECK")}</label>
                 <input 
                     type="password" 
                     name="password_confirmation" 
@@ -135,9 +137,9 @@ export default function SignupForm() {
             )}
            
             <div className="form__block">
-                Do you aleady have an account?
+                {translate("YES_ACCOUNT")}
                 <Link to="/users/login" className="form__link">
-                    Login
+                    {translate("MENU_LOGIN")}
                 </Link>
             </div>
             <div className="form__block--lg">
@@ -146,7 +148,7 @@ export default function SignupForm() {
                     className="form__btn--submit" 
                     disabled={error?.length > 0 }
                     >
-                    Sign Up
+                    {translate("MENU_SIGNUP")}
                 </button>
             </div>
             <div className="form__block">
@@ -156,7 +158,7 @@ export default function SignupForm() {
                     className="form__btn--google" 
                     onClick={onClickSocialLogin}
                 >
-                    Sign up with Google Account
+                    {translate("SIGNUP_GOOGLE")}
                 </button>
             </div>
             <div className="form__block">
@@ -166,7 +168,7 @@ export default function SignupForm() {
                     className="form__btn--github" 
                     onClick={onClickSocialLogin}
                 >
-                    Sign up with Github Account
+                    {translate("SIGNUP_GITHUB")}
                 </button>
             </div>
         </form>

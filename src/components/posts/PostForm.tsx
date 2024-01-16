@@ -3,10 +3,10 @@ import { collection, addDoc } from "firebase/firestore";
 import { FiImage } from "react-icons/fi";
 import { db, storage } from "firebaseApp";
 import { v4 as uuidv4 } from 'uuid';
-
 import { toast } from "react-toastify";
 import AuthContext from "context/AuthContext";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
+import useTranslation from "hooks/useTranslation";
 
 export default function PostForm() {
   const [content, setContent] = useState<string>("");
@@ -15,6 +15,7 @@ export default function PostForm() {
   const [imageFile, setImageFile] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting]=useState<boolean>(false);
   const { user } = useContext(AuthContext);
+  const translate = useTranslation();
   
   const handleFileUpload = (e:any) => {
     const{
@@ -48,7 +49,11 @@ export default function PostForm() {
       //update download url of the uploaded image
       await addDoc(collection(db, "posts"), {
         content: content,
-        createdAt: new Date()?.toDateString(),
+        createdAt: new Date()?.toLocaleDateString('en-US', {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        }),
         uid: user?.uid,
         email: user?.email,
         hashTags: tags,
@@ -57,7 +62,7 @@ export default function PostForm() {
       setTags([]);
       setHashTag("");
       setContent("");
-      toast.success("Successfully posted.");
+      toast.success(translate("MESSAGE_POST_SUCCESS"));
       setImageFile(null);
       setIsSubmitting(false);
     } catch (e: any) {
@@ -106,7 +111,7 @@ export default function PostForm() {
         required
         name="content"
         id="content"
-        placeholder="What is happening?"
+        placeholder={translate("POST_PLACEHOLDER")}
         onChange={onChange}
         value={content}
       />
@@ -126,7 +131,7 @@ export default function PostForm() {
             className="post-form__input" 
             name="hashtag" 
             id="hashtag" 
-            placeholder="hashtag + spacebar"
+            placeholder={translate("POST_HASHTAG")}
             onChange={onChangeHashTag}
             onKeyUp={handleKeyUp}
             value={hashTag}
@@ -153,14 +158,14 @@ export default function PostForm() {
               onClick={handleDeleteImage}
               type="button"
             >
-              Clear
+              {translate("BUTTON_DELETE")}
             </button>
           </div>
         )}
         </div>
         <input 
           type="submit"
-          value="Tweet" 
+          value={translate("BUTTON_POST")}
           className="post-form__submit-btn"
           disabled={isSubmitting}
          />

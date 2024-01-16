@@ -8,6 +8,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { PostProps } from "pages/home";
 import { getDownloadURL, ref, uploadString, deleteObject } from "firebase/storage";
 import { v4 as uuidv4 } from 'uuid';
+import PostHeader from "./Header";
+import useTranslation from "hooks/useTranslation";
 
 
 
@@ -21,6 +23,8 @@ export default function PostEditForm() {
     const [isSubmitting, setIsSubmitting]=useState<boolean>(false);
     const navigate = useNavigate();
     const {user} =useContext(AuthContext);
+    const translate = useTranslation();
+
     const handleFileUpload = (e:any) => {
         const{
           target:{files}
@@ -72,7 +76,7 @@ export default function PostEditForm() {
                                 imageUrl:imageUrl,
                             });
                             navigate(`/posts/${post?.id}`);
-                            toast.success("Successfully editted.");
+                            toast.success(translate("MESSAGE_POST_SUCCESS"));
                         }
                         setImageFile(null);
                         setIsSubmitting(false);
@@ -95,7 +99,7 @@ export default function PostEditForm() {
     const handleKeyUp = (e:any) => {
         if(e.keyCode === 32 && e.target.value.trim() !== '') {
             if(tags?.includes(e.target.value?.trim())){
-                toast.error("Already existing tag.");
+                toast.error(translate("MESSAGE_EXISTING_TAG"));
             }else{
                 setTags( (prev) => (prev?.length > 0 ? ([...prev, hashTag]) : ([hashTag])));
                 setHashTag("");
@@ -117,13 +121,15 @@ export default function PostEditForm() {
 
 
     return(
+        <div className="post">
+          <PostHeader/>  
         <form className="post-form" onSubmit={onSubmit}>
             <textarea 
                 className="post-form__textarea"
                 required
                 name="content"
                 id="content"
-                placeholder="What is happeing?"
+                placeholder= {translate("POST_PLACEHOLDER")}
                 onChange={onChange}
                 value={content}
             />
@@ -165,17 +171,18 @@ export default function PostEditForm() {
                 onClick={handleDeleteImage}
                 type="button"
                 >
-                Clear
+                    {translate("BUTTON_DELETE")}
                 </button>
             </div>
             )}
             <input 
                 type="submit" 
-                value="Update" 
+                value={translate("BUTTON_EDIT")} 
                 className="post-form__submit-btn" 
                 disabled={isSubmitting}
             />
         </div>  
     </form>
+    </div>
     )
 };
