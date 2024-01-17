@@ -21,24 +21,34 @@ export default function MenuList() {
             <div className="footer__grid">
                 <button type="button" onClick={ () => navigate("/")}>
                     <BsHouse/>
-                    {translate("MENU_HOME")}
+                    <span className="footer__grid--text">
+                        {translate("MENU_HOME")}
+                    </span>
                 </button>
                 <button type="button"onClick={ () => navigate("/profile")}>
                     <BiUserCircle/>
-                    {translate("MENU_PROFILE")}
+                    <span className="footer__grid--text">
+                        {translate("MENU_PROFILE")}
+                    </span>
                 </button>
                 <button type="button"onClick={ () => navigate("/search")}>
                     <AiOutlineSearch/>
-                    {translate("MENU_SEARCH")}
+                    <span className="footer__grid--text">
+                        {translate("MENU_SEARCH")}
+                    </span>
                 </button>
                 <button type="button"onClick={ () => navigate("/notification")}>
                     <IoMdNotificationsOutline/>
-                    {translate("MENU_NOTI")}
+                    <span className="footer__grid--text">
+                        {translate("MENU_NOTI")}
+                    </span>
                 </button>
                 {user === null ? (
                     <button type="button"onClick={() => navigate("/users/login")}>
                     <MdLogin/>
-                    {translate("MENU_LOGIN")}
+                    <span className="footer__grid--text">
+                        {translate("MENU_LOGIN")}
+                    </span>
                 </button>
                 ) : (
                     <button type="button"onClick={ async() => {
@@ -48,7 +58,9 @@ export default function MenuList() {
                         
                     }}>
                         <MdLogout/>
-                        {translate("MENU_LOGOUT")}
+                        <span className="footer__grid--text">
+                            {translate("MENU_LOGOUT")}
+                        </span>
                     </button>
                 )}
                 
